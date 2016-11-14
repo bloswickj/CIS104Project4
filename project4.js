@@ -13,16 +13,16 @@ let userChoice, userRating, selectedMovie;
 let movies = [], totalRatings = [], numRatings = [], averageRatings = [];
 
 function main(){
-    PopulateMovies();
+    PopulateInitialMovies();
     SetInitialValues();
     if (continueInput == null) {
         SetContinueInput();
     }
     while (continueInput == 1) {
-        SetSelectedMovie();
         SetUserChoice();
         if (earlyExit == 0) {
             if (userChoice == 1) {
+                SetSelectedMovie();
                 SetUserRating();
                 if (earlyExit == 0) {
                     PopulateNumRatings();
@@ -31,10 +31,14 @@ function main(){
                     SetContinueInput();
                 }
             }
-
-            else {
+            else if (userChoice == 0){
+                SetSelectedMovie();
                 PrintAverageRating();
                 SetContinueInput();
+            }
+            else if (userChoice == 2){
+                PopulateMovies();
+                SetNewValues();
             }
         }
     }
@@ -48,7 +52,7 @@ function main(){
 
 main();
 
-function SetInitialValues(){
+function SetInitialValues() {
     for (let i = 0; i < movies.length; i++) {
         totalRatings[i] = 0;
     }
@@ -58,6 +62,12 @@ function SetInitialValues(){
     for (let i = 0; i < movies.length; i++) {
         averageRatings[i] = 0;
     }
+}
+
+function SetNewValues() {
+    numRatings [movies.length - 1] = 0;
+    totalRatings [movies.length - 1] = 0;
+    averageRatings [movies.length - 1] = 0;
 }
 
 function SetContinueInput(){
@@ -98,10 +108,10 @@ function SetSelectedMovie() {
 
 function SetUserChoice() {
     process.stdout.write('\x1Bc');
-    console.log("Would you like to view the average rating for the movie or rate the movie?\n\t0.) View Average Rating\n\t1.) Rate Movie");
+    console.log("Would you like to view the average rating for a movie or rate a movie?\n\t0.) View Average Rating\n\t1.) Rate Movie\n\t2.) Add A Movie To The List");
     for (let i = 0; i < 5; i++) {
-        userChoice = PROMPT.questionInt("Please select a movie from the list above: ");
-        if (userChoice < 0 || userChoice > 1) {
+        userChoice = PROMPT.questionInt("Please select a choice from the list above: ")
+        if (userChoice < 0 ||userChoice > 2) {
             console.log("That is not a valid selection.");
             earlyExit = 1;
             continueInput = 0;
@@ -128,11 +138,16 @@ function SetUserRating(){
     }
 }
 
-function PopulateMovies() {
+function PopulateInitialMovies() {
     movies [0] = "Star Wars: The Phantom Menace";
     movies [1] = "Star Trek: First Contact";
     movies [2] = "Titanic";
     movies [3] = "Jurassic Park";
+}
+
+function PopulateMovies() {
+    process.stdout.write('\x1Bc');
+    movies [movies.length] = PROMPT.question("Please enter the name of the movie: ");
 }
 
 function PopulateNumRatings() {
